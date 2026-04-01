@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB-KDsssN0AZJSTi1lz_Fo...",
+  apiKey: "YOUR_KEY",
   authDomain: "sunnyblox2011.firebaseapp.com",
   projectId: "sunnyblox2011",
   storageBucket: "sunnyblox2011.firebasestorage.app",
@@ -11,7 +11,5 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig);
 
-console.log("Firebase connected 🔥");
-
-// Show on page
-document.body.innerHTML = "Firebase WORKING 🔥";
+// 🔥 SAFE CONSOLE TEST ONLY
+console.log("Firebase connected ✔");
