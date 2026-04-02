@@ -11,5 +11,5 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig);
 
-// 🔥 SAFE CONSOLE TEST ONLY
+// SAFE CONSOLE TEST ONLY
 console.log("Firebase connected ✔");
