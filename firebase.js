@@ -19,7 +19,7 @@ import {
 console.log("🔥 Firebase JS loaded");
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB-KDsssN0AZJSTi1lz_F0rY52G9p-Rfqo",
+  apiKey: "enter api key",
   authDomain: "sunnyblox2011.firebaseapp.com",
   projectId: "sunnyblox2011",
   storageBucket: "sunnyblox2011.firebasestorage.app",
