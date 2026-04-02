@@ -15,6 +15,8 @@ import {
   where
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
+console.log("🔥 firebase.js loaded");
+
 const firebaseConfig = {
   apiKey: "AIzaSyB-KDsssN0AZJSTi1lz_F0rY52G9p-Rfqo",
   authDomain: "sunnyblox2011.firebaseapp.com",
@@ -30,65 +32,67 @@ const db = getFirestore(app);
 
 console.log("🔥 Firebase ready");
 
-// 🔥 SIGN UP WITH DUPLICATE CHECK
-window.signUp = async function () {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-  const status = document.getElementById("status");
+// 🔥 WAIT UNTIL PAGE LOADS
+window.addEventListener("DOMContentLoaded", () => {
 
-  try {
-    // 🔍 CHECK IF USERNAME EXISTS
-    const q = query(collection(db, "users"), where("username", "==", username));
-    const querySnapshot = await getDocs(q);
+  const signupBtn = document.getElementById("signupBtn");
+  const loginBtn = document.getElementById("loginBtn");
 
-    if (!querySnapshot.empty) {
-      status.innerText = "Username already taken ❌";
+  signupBtn.addEventListener("click", async () => {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const status = document.getElementById("status");
+
+    try {
+      // 🔍 Check duplicate username
+      const q = query(collection(db, "users"), where("username", "==", username));
+      const snap = await getDocs(q);
+
+      if (!snap.empty) {
+        status.innerText = "Username taken ❌";
+        status.style.color = "red";
+        return;
+      }
+
+      const fakeEmail = username + "@sunnyblox.local";
+
+      const userCred = await createUserWithEmailAndPassword(auth, fakeEmail, password);
+      const user = userCred.user;
+
+      await setDoc(doc(db, "users", user.uid), {
+        username: username
+      });
+
+      console.log("✅ Signed up:", user.uid);
+
+      window.location.href = "index.html";
+
+    } catch (err) {
+      console.log(err.message);
+      status.innerText = err.message;
       status.style.color = "red";
-      return;
     }
+  });
 
-    // 🔐 CREATE ACCOUNT
-    const fakeEmail = username + "@sunnyblox.local";
+  loginBtn.addEventListener("click", async () => {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const status = document.getElementById("status");
 
-    const userCred = await createUserWithEmailAndPassword(auth, fakeEmail, password);
-    const user = userCred.user;
+    try {
+      const fakeEmail = username + "@sunnyblox.local";
 
-    // 💾 SAVE USER
-    await setDoc(doc(db, "users", user.uid), {
-      username: username
-    });
+      const userCred = await signInWithEmailAndPassword(auth, fakeEmail, password);
 
-    console.log("✅ Account created:", user.uid);
+      console.log("✅ Logged in:", userCred.user.uid);
 
-    // 🔁 REDIRECT
-    window.location.href = "index.html";
+      window.location.href = "index.html";
 
-  } catch (err) {
-    console.log(err.message);
-    status.innerText = err.message;
-    status.style.color = "red";
-  }
-};
+    } catch (err) {
+      console.log(err.message);
+      status.innerText = "Invalid login ❌";
+      status.style.color = "red";
+    }
+  });
 
-// 🔥 LOGIN
-window.login = async function () {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-  const status = document.getElementById("status");
-
-  try {
-    const fakeEmail = username + "@sunnyblox.local";
-
-    const userCred = await signInWithEmailAndPassword(auth, fakeEmail, password);
-
-    console.log("✅ Logged in:", userCred.user.uid);
-
-    // 🔁 REDIRECT
-    window.location.href = "index.html";
-
-  } catch (err) {
-    console.log(err.message);
-    status.innerText = "Invalid login ❌";
-    status.style.color = "red";
-  }
-};
+});
