@@ -1,24 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>SunnyBlox Auth</title>
-  <link rel="stylesheet" href="../style.css">
+  <title>SunnyBlox - Login</title>
 </head>
+
 <body>
 
-  <div class="box">
-    <h1>SunnyBlox</h1>
+<h1>SunnyBlox Login</h1>
 
-    <input id="username" type="text" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
+<!-- LOGIN -->
+<h2>Login</h2>
+<input id="loginUser" placeholder="Username">
+<br><br>
+<input id="loginPass" type="password" placeholder="Password">
+<br><br>
+<button onclick="login()">Login</button>
 
-    <button id="signupBtn">Sign Up</button>
-    <button id="loginBtn">Login</button>
+<hr>
 
-    <p id="status"></p>
-  </div>
+<!-- SIGN UP -->
+<h2>Sign Up</h2>
+<input id="signupUser" placeholder="Username">
+<br><br>
+<input id="signupPass" type="password" placeholder="Password">
+<br><br>
+<button onclick="signup()">Sign Up</button>
 
-  <script type="module" src="./firebase.js"></script>
+<p id="error" style="color:red;"></p>
+
+<!-- Firebase Logic -->
+<script type="module" src="firebase.js"></script>
 
 </body>
 </html>
