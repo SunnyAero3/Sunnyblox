@@ -11,7 +11,7 @@ import {
   setDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔥 Firebase config
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyB-KDsssN0AZJSTi1lz_F0rY52G9p-Rfqo",
   authDomain: "sunnyblox2011.firebaseapp.com",
@@ -30,9 +30,11 @@ function email(username){
   return username.toLowerCase() + "@sunnyblox.local";
 }
 
-// error display
-function showError(msg){
-  document.getElementById("error").innerText = msg;
+// status text
+function setStatus(msg, color){
+  const el = document.getElementById("status");
+  el.innerText = msg;
+  el.style.color = color;
 }
 
 // SIGN UP
@@ -40,6 +42,8 @@ window.signup = async function () {
   try {
     const u = document.getElementById("signupUser").value;
     const p = document.getElementById("signupPass").value;
+
+    setStatus("Creating account...", "black");
 
     const userCred = await createUserWithEmailAndPassword(auth, email(u), p);
 
@@ -49,10 +53,14 @@ window.signup = async function () {
       createdAt: Date.now()
     });
 
-    window.location.href = "index.html";
+    setStatus("Account created successfully!", "green");
+
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 800);
 
   } catch (e) {
-    showError(e.message);
+    setStatus("Signup failed: " + e.message, "red");
   }
 };
 
@@ -62,11 +70,17 @@ window.login = async function () {
     const u = document.getElementById("loginUser").value;
     const p = document.getElementById("loginPass").value;
 
+    setStatus("Logging in...", "black");
+
     await signInWithEmailAndPassword(auth, email(u), p);
 
-    window.location.href = "index.html";
+    setStatus("Login successful!", "green");
+
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 800);
 
   } catch (e) {
-    showError(e.message);
+    setStatus("Login failed: " + e.message, "red");
   }
 };
