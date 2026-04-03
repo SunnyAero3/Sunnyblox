@@ -1,25 +1,19 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 import {
   getFirestore,
   doc,
-  setDoc,
-  getDocs,
-  collection,
-  query,
-  where
-} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+  setDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-console.log("🔥 Firebase JS loaded");
-
+// 🔥 Firebase config
 const firebaseConfig = {
-  apiKey: "enter api key",
+  apiKey: "AIzaSyB-KDsssN0AZJSTi1lz_F0rY52G9p-Rfqo",
   authDomain: "sunnyblox2011.firebaseapp.com",
   projectId: "sunnyblox2011",
   storageBucket: "sunnyblox2011.firebasestorage.app",
@@ -31,70 +25,48 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-window.addEventListener("DOMContentLoaded", () => {
+// username → fake email
+function email(username){
+  return username.toLowerCase() + "@sunnyblox.local";
+}
 
-  const signupBtn = document.getElementById("signupBtn");
-  const loginBtn = document.getElementById("loginBtn");
+// error display
+function showError(msg){
+  document.getElementById("error").innerText = msg;
+}
 
-  // 🔥 SIGN UP
-  signupBtn.addEventListener("click", async () => {
+// SIGN UP
+window.signup = async function () {
+  try {
+    const u = document.getElementById("signupUser").value;
+    const p = document.getElementById("signupPass").value;
 
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    const status = document.getElementById("status");
+    const userCred = await createUserWithEmailAndPassword(auth, email(u), p);
 
-    try {
-      console.log("Signup attempt:", username);
+    await setDoc(doc(db, "users", userCred.user.uid), {
+      username: u,
+      bio: "New player",
+      createdAt: Date.now()
+    });
 
-      // duplicate check
-      const q = query(collection(db, "users"), where("username", "==", username));
-      const snap = await getDocs(q);
+    window.location.href = "index.html";
 
-      if (!snap.empty) {
-        status.innerText = "Username already taken ❌";
-        return;
-      }
+  } catch (e) {
+    showError(e.message);
+  }
+};
 
-      const fakeEmail = username + "@sunnyblox.local";
+// LOGIN
+window.login = async function () {
+  try {
+    const u = document.getElementById("loginUser").value;
+    const p = document.getElementById("loginPass").value;
 
-      const userCred = await createUserWithEmailAndPassword(auth, fakeEmail, password);
+    await signInWithEmailAndPassword(auth, email(u), p);
 
-      await setDoc(doc(db, "users", userCred.user.uid), {
-        username: username
-      });
+    window.location.href = "index.html";
 
-      console.log("Account created");
-
-      window.location.href = "../index.html";
-
-    } catch (err) {
-      console.log(err.message);
-      status.innerText = err.message;
-    }
-  });
-
-  // 🔥 LOGIN
-  loginBtn.addEventListener("click", async () => {
-
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    const status = document.getElementById("status");
-
-    try {
-
-      const fakeEmail = username + "@sunnyblox.local";
-
-      await signInWithEmailAndPassword(auth, fakeEmail, password);
-
-      console.log("Logged in");
-
-      window.location.href = "../index.html";
-
-    } catch (err) {
-      console.log(err.message);
-      status.innerText = "Invalid login ❌";
-    }
-
-  });
-
-});
+  } catch (e) {
+    showError(e.message);
+  }
+};
